@@ -4,12 +4,8 @@ import requests
 class Lights:
     
     ## Turn on selected lights
-    def lightsOn(self):
+    def setLights(self, colorX, colorY, level, deviceId=-1):
         ## Set parameters
-        colorX = 0.2 # 0-1
-        colorY = 0.2 # 0-1
-        level = 100 # 0-100
-        deviceId = 3 # Device 0, 3, 8 or empty is 'all'
         colorX = int(colorX*32768)
         colorY = int(colorY*32768) 
         
@@ -32,6 +28,3 @@ class Lights:
         ## Send the request to turn off the lights
         payload = {'level': level, 'colour_x': colorX, 'colour_y': colorY}
         request = requests.get('https://5nk8a0rfn5.execute-api.eu-west-1.amazonaws.com/v1/command', params=payload)
-        
-        
-    
