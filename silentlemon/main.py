@@ -62,20 +62,36 @@ def find_setting(ev):
             return KEYWORD_SETTING_MAP[word]
     return DEFAULT_SETTING
 
-def schedule(light_calls, from_time):
-    #print(time.ctime())
+def call_light(lc, dt):
+    '''
+    lc light call
+    '''
+    print(lc['type'] + ' ' + lc['event']['description'] + ' @' + str(dt) + 's')
 
-    if len(light_calls) == 0:
-        return
-
-    first = light_calls[0]
-    delta_seconds = first['at_time'] - from_time
+def schedule(light_call):
+    now_time = time.time()
+    delta_seconds = light_call['at_time'] - now_time
     # Make quick
     dt = delta_seconds / 1000.0
 
-    print(first['type'] + ' ' + first['event']['description'] + ', ' + str(dt) + 's')
+    if dt > 0:
+        threading.Timer(dt, call_light, [light_call, dt]).start()
 
-    threading.Timer(dt, schedule, [light_calls[1:], first['at_time']]).start()
+
+# def schedule(light_calls, from_time):
+#     #print(time.ctime())
+#
+#     if len(light_calls) == 0:
+#         return
+#
+#     first = light_calls[0]
+#     delta_seconds = first['at_time'] - from_time
+#     # Make quick
+#     dt = delta_seconds / 1000.0
+#
+#     print(first['type'] + ' ' + first['event']['description'] + ', ' + str(dt) + 's')
+#
+#     threading.Timer(dt, schedule, [light_calls[1:], first['at_time']]).start()
 
 def main():
     cal = Calendar()
@@ -99,9 +115,12 @@ def main():
             'setting': light_setting['end']
         })
 
+    for light_call in light_calls:
+        schedule(light_call)
+
     #print(light_calls)
-    now_epoch = time.time()
-    schedule(light_calls, now_epoch)
+    #now_epoch = time.time()
+    #schedule(light_calls, now_epoch)
     #print(evs[0]['start'])
 
 if __name__ == "__main__":
