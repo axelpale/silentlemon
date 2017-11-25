@@ -94,10 +94,16 @@ class Calendar:
             return []
 
         def event2simple(ev):
+
+            if 'description' in ev:
+                desc = ev['summary'] + ' ' + ev['description']
+            else:
+                desc = ev['summary']
+
             return {
-              'description': event['summary'] + ' ' + event['description'],
-              'start': event['start'].get('dateTime'),
-              'end': event['end'].get('dateTime'),
+              'description': desc,
+              'start': ev['start'].get('dateTime'),
+              'end': ev['end'].get('dateTime'),
             }
 
         #for event in events:
