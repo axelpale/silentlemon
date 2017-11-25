@@ -11,7 +11,7 @@ Clone the repo:
 
     $ git clone https://github.com/axelpale/silentlemon.git
 
-Create silentlemon/silentlemon/client_secret.json with following content
+Create silentlemon/silentlemon/client_secret.json with following content. You can find the details from your Google API settings.
 
     {
       "installed": {
