@@ -9,12 +9,12 @@ class Lights:
         colorX = 0.2 # 0-1
         colorY = 0.2 # 0-1
         level = 100 # 0-100
-        deviceId = 2 # Device 1, 2, 3 or empty is 'all'
+        deviceId = 3 # Device 0, 3, 8 or empty is 'all'
         colorX = int(colorX*32768)
         colorY = int(colorY*32768) 
         
         ## If deviceID is 1,2,3 then set it, otherwise leave it from the parameters and all of the lights are set
-        if (deviceId == 1 or deviceId == 2 or deviceId == 3 ):
+        if (deviceId == 0 or deviceId == 3 or deviceId == 8 ):
                 payload = {'device': deviceId, 'level': level, 'colour_x': colorX, 'colour_y': colorY}
         else:
                 payload = {'level': level, 'colour_x': colorX, 'colour_y': colorY}
@@ -33,3 +33,5 @@ class Lights:
         payload = {'level': level, 'colour_x': colorX, 'colour_y': colorY}
         request = requests.get('https://5nk8a0rfn5.execute-api.eu-west-1.amazonaws.com/v1/command', params=payload)
         
+        
+    
