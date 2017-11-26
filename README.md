@@ -2,6 +2,8 @@
 
 Calendar-driven ambient lighting
 
+![Logo](silent-lemon-logo.jpg)
+
 
 ## Installation
 
