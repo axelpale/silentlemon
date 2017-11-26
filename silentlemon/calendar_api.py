@@ -63,15 +63,6 @@ class Calendar:
     def __init__(self):
         pass
 
-    def getTodayEvents(self):
-        return [
-            {
-                "description": "Meeting",
-                "start": floor(time.time()),
-                "end": floor(time.time() + 60 * 60)
-            }
-        ]
-
     def get_upcoming_events(self, n=10):
         """Shows basic usage of the Google Calendar API.
 
@@ -82,15 +73,18 @@ class Calendar:
         http = credentials.authorize(httplib2.Http())
         service = discovery.build('calendar', 'v3', http=http)
 
-        now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
+        nowts = datetime.datetime.utcfromtimestamp(1511668000)
+        now = nowts.isoformat() + 'Z'
+        #now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
+
         #print('Getting the upcoming 10 events')
         eventsResult = service.events().list(
             calendarId=CALENDAR_ID, timeMin=now, maxResults=n, singleEvents=True,
-            orderBy='startTime').execute()
+            orderBy='startTime', timeZone='Etc/GMT').execute()
         events = eventsResult.get('items', [])
 
         if not events:
-            #print('No upcoming events found.')
+            # No upcoming events found
             return []
 
         def event2simple(ev):
@@ -99,6 +93,8 @@ class Calendar:
                 desc = ev['summary'] + ' ' + ev['description']
             else:
                 desc = ev['summary']
+
+            #print(ev['start'])
 
             return {
               'description': desc,

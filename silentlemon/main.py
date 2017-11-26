@@ -3,6 +3,7 @@
 import time
 import datetime
 import threading
+import copy
 from math import floor
 from calendar_api import Calendar
 from lights import Lights
@@ -33,17 +34,15 @@ DEFAULT_SETTING = {
 KEYWORD_SETTING_MAP = {
   'energizing': {
     'start': {
-      'offset_sec': -HOUR / 2,
-      'fade_sec': 10,
       'color_x': 0.25,
       'color_y': 0.08,
       'level': 200,
       'devices': [DEVICE]
     },
     'end': {
-      'color_x': 0.25,
-      'color_y': 0.08,
-      'level': 100,
+      'color_x': 0.3,
+      'color_y': 0.3,
+      'level': 50,
       'devices': [DEVICE]
     }
   },
@@ -58,7 +57,7 @@ KEYWORD_SETTING_MAP = {
     'end': {
       'color_x': 0.3,
       'color_y': 0.3,
-      'level': 50,
+      'level': 0,
       'devices': [DEVICE]
     }
   },
@@ -96,7 +95,9 @@ def call_light(lc, dt):
     '''
     setting = lc['setting']
 
-    print(lc['type'] + ' ' + lc['event']['description'] + ' @' + str(dt) + 's')
+    dtime = datetime.datetime.fromtimestamp(lc['at_time']) + datetime.timedelta(hours=2)
+
+    print(dtime.strftime('%H:%M') + ' ' + lc['event']['description'] + ' / ' + lc['type'] + ' @ ' + str(dt) + 's')
 
     for device_id in setting['devices']:
         x = setting['color_x']
@@ -106,17 +107,20 @@ def call_light(lc, dt):
         print('  Device {0}: ({1}, {2}) {3}%'.format(device_id, x, y, l))
 
 def schedule(light_call):
-    now_time = 1511674500
+    now_time = 1511668000  # sunday morning 7:30 AM in finland 2017-11-26
     delta_seconds = light_call['at_time'] - now_time
     # Make quick
-    dt = delta_seconds / 1000.0
+    dt = delta_seconds / 400.0
 
     if dt > 0:
         threading.Timer(dt, call_light, [light_call, dt]).start()
+    #else:
+    #    print('skip')
+    #    print(light_call)
 
 def main():
     cal = Calendar()
-    evs = cal.get_upcoming_events()
+    evs = cal.get_upcoming_events(20)
     light_calls = []
 
     for ev in evs:
@@ -127,6 +131,20 @@ def main():
             'at_time': start_epoch.timestamp(),
             'event': ev,
             'type': 'start',
+            'setting': light_setting['start']
+        })
+        dim_setting = copy.copy(light_setting['start'])
+        dim_setting['level'] = floor(dim_setting['level'] / 2)
+        light_calls.append({
+            'at_time': end_epoch.timestamp() - 30 * 60,
+            'event': ev,
+            'type': 'dim',
+            'setting': dim_setting
+        })
+        light_calls.append({
+            'at_time': end_epoch.timestamp() - 20 * 60,
+            'event': ev,
+            'type': 'postdim',
             'setting': light_setting['start']
         })
         light_calls.append({
