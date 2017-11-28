@@ -1,6 +1,8 @@
 # silentlemon
 
-Calendar-driven ambient lighting
+Google calendar-driven light control demo for Helvar intelligent lighting challenge at Junction 2017 hackathlon.
+
+![Logo](silent-lemon-logo.jpg)
 
 
 ## Installation
