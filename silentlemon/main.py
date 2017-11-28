@@ -12,7 +12,7 @@ MINUTE = 60
 HOUR = 60 * MINUTE
 TIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
-DEVICE = 3
+DEVICE = 8
 
 DEFAULT_SETTING = {
     'start': {
